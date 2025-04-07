@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "../api/axios";
 
 const ResetPassword = () => {
-    const [searchParams] = useSearchParams();
-    const token = searchParams.get("token");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+
+    const {token}= useParams()
+
+    console.log(token)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,11 +17,12 @@ const ResetPassword = () => {
         setError("");
 
         try {
-            const res = await axios.post(`/auth/reset-password`, {
+            const res = await axios.post(`/auth/reset-password/${token}`, {
                 token,
                 password,
             });
             setMessage(res.data.message || "Password reset successfully!");
+            setPassword("");
         } catch (err) {
             setError(err.response?.data?.message || "Failed to reset password.");
         }

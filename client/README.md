@@ -1,12 +1,45 @@
-# React + Vite
+# MERN Stack User Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-featured User Management System built using the **MERN Stack**, enhanced with **MySQL**, **Redis Caching**, **JWT Authentication**, **Role-Based Access Control**, and **Social Login**.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Signup & Login with Email Verification
+- Forgot & Reset Password Functionality
+- JWT-based Authentication & Authorization
+- Role-based Access Control (`admin`, `user`)
+- Admin Panel for User Management (Edit/Delete)
+- Profile Viewing & Editing
+- Google OAuth Login
+- Pagination & Search in User List
+- File Uploads with Multer (e.g., profile pictures)
+- Redis Caching for User List
+- Responsive Frontend built with **React + Tailwind CSS**
+- Form validation using **React Hook Form**
+- Sequelize ORM for MySQL integration
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React
+- React Router
+- Tailwind CSS
+- React Hook Form
+
+### Backend
+
+- Node.js
+- Express.js
+- MySQL with Sequelize ORM
+- Redis (for caching)
+- JWT for authentication
+- Nodemailer (for email verification & password reset)
+- Multer (for file uploads)
+- Google OAuth (Social Login)
+
+---
+
+## 📁 Project Structure

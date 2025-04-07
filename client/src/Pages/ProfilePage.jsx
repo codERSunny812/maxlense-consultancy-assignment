@@ -1,125 +1,86 @@
+// src/pages/Profile.jsx
 import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
+import Navbar from "../Component/Navbar";
 
-const ProfilePage = () => {
+const Profile = () => {
     const [user, setUser] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [formData, setFormData] = useState({
-        name: "",
-        password: "",
-    });
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
 
-    const token = localStorage.getItem("token");
+    const userId = JSON?.parse(localStorage?.getItem("user"));
+    const id = userId?.id;
+
+    console.log("user id", id);
+
+    const fetchUser = async () => {
+        try {
+            if (!id) {
+                setError("User not logged in");
+                setLoading(false);
+                return;
+            }
+
+            const res = await axios.post("/user/get-profile", {
+                userId: id
+            });
+
+            console.log(res);
+            setUser(res.data);
+            setLoading(false);
+        } catch (err) {
+            console.error("Error fetching profile:", err);
+            setError("Failed to fetch profile");
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const res = await axios.get("/user/profile", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setUser(res.data.user);
-                setFormData((prev) => ({ ...prev, name: res.data.user.name }));
-                setImagePreview(res.data.user.profileImage);
-            } catch (err) {
-                console.error(err);
-                alert("Failed to load profile.");
-            }
-        };
-        fetchProfile();
+        fetchUser();
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+    if (loading) {
+        return (
+            <div className="min-h-screen flex justify-center items-center text-lg">
+                Loading...
+            </div>
+        );
+    }
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData((prev) => ({ ...prev, profileImage: file }));
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const data = new FormData();
-        data.append("name", formData.name);
-        if (formData.password) data.append("password", formData.password);
-        if (formData.profileImage) data.append("profileImage", formData.profileImage);
-
-        try {
-            const res = await axios.put("/user/profile", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            alert(res.data.message || "Profile updated successfully!");
-        } catch (err) {
-            console.error(err);
-            alert(err.response?.data?.message || "Profile update failed");
-        }
-    };
-
-    if (!user) return <p className="text-center mt-20">Loading profile...</p>;
+    if (error) {
+        return (
+            <div className="min-h-screen flex justify-center items-center text-red-600 text-lg">
+                {error}
+            </div>
+        );
+    }
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded-2xl space-y-4">
-            <h2 className="text-2xl font-semibold text-center mb-4">My Profile</h2>
-
-            <div className="flex justify-center">
-                <img
-                    src={imagePreview || "/default-avatar.png"}
-                    alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover border"
-                />
+        <div className="min-h-screen bg-gray-100">
+            {/* Make Navbar more prominent */}
+            <div className="mb-6">
+                <Navbar loggedUser={user} />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                />
+            <div className="flex flex-col items-center px-4">
+                <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-xl">
+                    <h1 className="text-3xl font-extrabold mb-6 text-center text-gray-800">My Profile</h1>
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="New Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                />
-
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full p-2 border rounded"
-                />
-
-                <button
-                    type="submit"
-                    className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-                >
-                    Update Profile
-                </button>
-            </form>
-
-            <div className="text-sm text-gray-500 mt-4">
-                <p><strong>Username:</strong> {user.username}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
+                    <div className="flex flex-col items-center space-y-4">
+                        <img
+                            src={user.profileImage}
+                            alt="Profile"
+                            className="w-32 h-32 rounded-full object-cover border-4 border-blue-500"
+                        />
+                        <p className="text-lg"><strong>Name:</strong> {user.name}</p>
+                        <p className="text-lg"><strong>Email:</strong> {user.email}</p>
+                        <p className="text-lg"><strong>Role:</strong> {user.role}</p>
+                        <p className="text-lg"><strong>Verified:</strong> {user.isVerified ? "Yes" : "No"}</p>
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
 
-export default ProfilePage;
+export default Profile;

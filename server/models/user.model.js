@@ -1,57 +1,58 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
 
-const User = sequelize.define('User', {
+const User = sequelize.define(
+  "User",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
-    name: { 
-        type: DataTypes.STRING
-     },
+    name: {
+      type: DataTypes.STRING,
+    },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true, // ✅ this is okay
-        validate: {
-            isEmail: true,
-        },
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
-    password: { 
-        type: DataTypes.STRING 
+    password: {
+      type: DataTypes.STRING,
     },
-    profileImage: { 
-        type: DataTypes.STRING,
-        allowNull:true
-     },
+    profileImage: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     role: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "user", // other option: "admin"
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "user", // other option: "admin"
     },
     isVerified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
-    verificationToken:{
-        type: DataTypes.STRING,
-        allowNull:true,
+    verificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     resetPasswordToken: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
     },
     resetPasswordExpires: {
-        type: DataTypes.DATE,
+      type: DataTypes.DATE,
     },
-
-},
-{
-        freezeTableName:true // 👈 prevents Sequelize from pluralizing table name
-},
-{
-        tableName: "User", // 👈 this fixes the issue
-    }
+  },
+  {
+    freezeTableName: true,
+  },
+  {
+    tableName: "User",
+  }
 );
 
 module.exports = User;
